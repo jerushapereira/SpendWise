@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Income | SpendWise{% endblock %}
+{% block page_title %}Income{% endblock %}
+{% block content %}
+<section class="stats-grid one-stat">
+    <article class="stat-card glass-card"><span>This month's income</span><strong>{{ settings.currency }}{{ "%.2f"|format(monthly_income) }}</strong></article>
+</section>
+<section class="form-and-list">
+    <form method="post" class="panel glass-card form-panel">
+        <h2>Add income</h2>
+        <div class="form-grid">
+            <label>Amount<input type="number" name="amount" min="0.01" step="0.01" required></label>
+            <label>Date<input type="date" name="transaction_date" value="{{ today }}" required></label>
+            <label>Source<select name="category" required>{% for c in income_categories %}<option>{{ c }}</option>{% endfor %}</select></label>
+            <label>Method<select name="payment_method">{% for p in payment_methods %}<option>{{ p }}</option>{% endfor %}</select></label>
+        </div>
+        <label>Description<input type="text" name="description" maxlength="120" required placeholder="Internship stipend, freelance project"></label>
+        <label>Notes<textarea name="notes" rows="3"></textarea></label>
+        <button class="button primary" type="submit">Add income</button>
+    </form>
+    {% include "partials/transaction_table.html" with context %}
+</section>
+{% endblock %}

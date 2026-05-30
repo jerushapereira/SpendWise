@@ -1,0 +1,54 @@
+<article class="panel glass-card list-panel">
+    <div class="panel-head">
+        <h2>Transactions</h2>
+        <div class="export-links">
+            <a href="{{ url_for('export_csv', **request.args) }}">CSV</a>
+            <a href="{{ url_for('export_pdf', **request.args) }}">PDF</a>
+        </div>
+    </div>
+    <form class="filters" method="get">
+        <input type="search" name="search" value="{{ request.args.get('search','') }}" placeholder="Search notes or description">
+        <select name="category">
+            <option value="">All categories</option>
+            {% set tx_categories = categories if request.endpoint == 'expenses' else income_categories %}
+            {% for c in tx_categories %}
+                <option value="{{ c }}" {{ 'selected' if request.args.get('category') == c else '' }}>{{ c }}</option>
+            {% endfor %}
+        </select>
+        <input type="date" name="start_date" value="{{ request.args.get('start_date','') }}">
+        <input type="date" name="end_date" value="{{ request.args.get('end_date','') }}">
+        <select name="sort">
+            <option value="date_desc" {{ 'selected' if request.args.get('sort') == 'date_desc' else '' }}>Newest</option>
+            <option value="date_asc" {{ 'selected' if request.args.get('sort') == 'date_asc' else '' }}>Oldest</option>
+            <option value="amount_desc" {{ 'selected' if request.args.get('sort') == 'amount_desc' else '' }}>Highest amount</option>
+            <option value="amount_asc" {{ 'selected' if request.args.get('sort') == 'amount_asc' else '' }}>Lowest amount</option>
+        </select>
+        <button class="button secondary" type="submit">Filter</button>
+    </form>
+    {% if transactions %}
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Method</th><th>Amount</th><th></th></tr></thead>
+                <tbody>
+                    {% for tx in transactions %}
+                    <tr>
+                        <td>{{ tx.transaction_date }}</td>
+                        <td><span class="pill">{{ tx.category }}</span></td>
+                        <td><strong>{{ tx.description }}</strong><small>{{ tx.notes or '' }}</small></td>
+                        <td>{{ tx.payment_method }}</td>
+                        <td class="{{ tx.type }}">{{ settings.currency }}{{ "%.2f"|format(tx.amount) }}</td>
+                        <td class="row-actions">
+                            <a class="icon-button small" href="{{ url_for('edit_transaction', transaction_id=tx.id) }}" title="Edit"><i data-lucide="pencil"></i></a>
+                            <form method="post" action="{{ url_for('delete_transaction', transaction_id=tx.id) }}" onsubmit="return confirm('Delete this transaction?')">
+                                <button class="icon-button small danger" title="Delete"><i data-lucide="trash-2"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">No matching transactions. Try clearing filters or add a new entry.</div>
+    {% endif %}
+</article>

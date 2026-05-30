@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Analytics | SpendWise{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+{% block content %}
+<section class="analytics-grid">
+    <article class="panel glass-card chart-panel">
+        <div class="panel-head"><h2>Category expenses</h2></div>
+        <canvas id="categoryChart"></canvas>
+        <div class="empty-state chart-empty">Add expense data to activate this chart.</div>
+    </article>
+    <article class="panel glass-card chart-panel">
+        <div class="panel-head"><h2>Monthly income vs spending</h2></div>
+        <canvas id="monthlyChart"></canvas>
+        <div class="empty-state chart-empty">Monthly totals will appear after transactions are added.</div>
+    </article>
+    <article class="panel glass-card chart-panel wide">
+        <div class="panel-head"><h2>Spending trend</h2></div>
+        <canvas id="trendChart"></canvas>
+        <div class="empty-state chart-empty">Daily spending trends need at least one expense.</div>
+    </article>
+    <article class="panel glass-card wide">
+        <div class="panel-head">
+            <h2>AI spending insights</h2>
+            <button class="button secondary" id="insightButton" type="button">Generate</button>
+        </div>
+        <div id="insightState" class="empty-state">Generate insights from your transaction history.</div>
+        <ul id="insightList" class="insight-list"></ul>
+    </article>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+    window.analyticsData = {{ analytics|tojson }};
+</script>
+{% endblock %}

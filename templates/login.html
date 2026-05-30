@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Login | SpendWise{% endblock %}
+{% block content %}
+<section class="auth-page">
+    <a href="{{ url_for('landing') }}" class="brand centered-brand"><span class="brand-mark">S</span><span>SpendWise</span></a>
+    <form method="post" class="auth-card glass-card">
+        <p class="eyebrow">Welcome back</p>
+        <h1>Login</h1>
+        <label>Email<input type="email" name="email" required autocomplete="email"></label>
+        <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+        <button class="button primary full" type="submit">Login</button>
+        <p class="form-note">New here? <a href="{{ url_for('signup') }}">Create an account</a></p>
+    </form>
+</section>
+{% endblock %}

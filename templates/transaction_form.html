@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Edit Transaction | SpendWise{% endblock %}
+{% block page_title %}Edit transaction{% endblock %}
+{% block content %}
+<form method="post" class="panel glass-card edit-card">
+    <h2>{{ tx.type.title() }} details</h2>
+    <div class="form-grid">
+        <label>Amount<input type="number" name="amount" min="0.01" step="0.01" value="{{ tx.amount }}" required></label>
+        <label>Date<input type="date" name="transaction_date" value="{{ tx.transaction_date }}" required></label>
+        <label>Category<select name="category" required>
+            {% set options = categories if tx.type == 'expense' else income_categories %}
+            {% for c in options %}<option {{ 'selected' if c == tx.category else '' }}>{{ c }}</option>{% endfor %}
+        </select></label>
+        <label>Method<select name="payment_method">{% for p in payment_methods %}<option {{ 'selected' if p == tx.payment_method else '' }}>{{ p }}</option>{% endfor %}</select></label>
+    </div>
+    <label>Description<input type="text" name="description" value="{{ tx.description }}" required></label>
+    <label>Notes<textarea name="notes" rows="3">{{ tx.notes or '' }}</textarea></label>
+    <div class="form-actions">
+        <button class="button primary" type="submit">Save changes</button>
+        <a class="button secondary" href="{{ url_for('expenses' if tx.type == 'expense' else 'income') }}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

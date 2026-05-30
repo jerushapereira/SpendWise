@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | SpendWise{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<section class="stats-grid">
+    <article class="stat-card glass-card"><span>Total income</span><strong>{{ settings.currency }}{{ "%.2f"|format(total_income) }}</strong></article>
+    <article class="stat-card glass-card"><span>Total expenses</span><strong>{{ settings.currency }}{{ "%.2f"|format(total_expenses) }}</strong></article>
+    <article class="stat-card glass-card"><span>Remaining balance</span><strong>{{ settings.currency }}{{ "%.2f"|format(balance) }}</strong></article>
+    <article class="stat-card glass-card"><span>Monthly spending</span><strong>{{ settings.currency }}{{ "%.2f"|format(monthly_spending) }}</strong></article>
+</section>
+
+<section class="two-column">
+    <article class="panel glass-card">
+        <div class="panel-head">
+            <h2>Budget progress</h2>
+            <a href="{{ url_for('settings') }}">Edit</a>
+        </div>
+        {% if budgets %}
+            <div class="progress-list">
+                {% for budget in budgets %}
+                    {% set percent = (budget.used / budget.monthly_limit * 100) if budget.monthly_limit else 0 %}
+                    <div class="progress-row">
+                        <div><strong>{{ budget.category }}</strong><span>{{ settings.currency }}{{ "%.0f"|format(budget.used) }} / {{ settings.currency }}{{ "%.0f"|format(budget.monthly_limit) }}</span></div>
+                        <div class="progress-track"><span class="{{ 'danger-bar' if percent >= 90 else 'warn-bar' if percent >= 75 else '' }}" style="width: {{ [percent, 100]|min }}%"></span></div>
+                        {% if percent >= 85 %}<small class="warning-text">Near limit</small>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">Set monthly category budgets in Settings to see progress here.</div>
+        {% endif %}
+    </article>
+
+    <article class="panel glass-card">
+        <div class="panel-head">
+            <h2>Recent transactions</h2>
+            <a href="{{ url_for('expenses') }}">View all</a>
+        </div>
+        {% if recent %}
+            <div class="transaction-list">
+                {% for tx in recent %}
+                    <div class="transaction-item">
+                        <span class="tx-icon {{ tx.type }}">{{ tx.category[0] }}</span>
+                        <div>
+                            <strong>{{ tx.description }}</strong>
+                            <span>{{ tx.category }} · {{ tx.transaction_date }}</span>
+                        </div>
+                        <b class="{{ tx.type }}">{{ '-' if tx.type == 'expense' else '+' }}{{ settings.currency }}{{ "%.2f"|format(tx.amount) }}</b>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">No transactions yet. Add your first expense or income entry.</div>
+        {% endif %}
+    </article>
+</section>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Settings | SpendWise{% endblock %}
+{% block page_title %}Settings{% endblock %}
+{% block content %}
+<section class="settings-grid">
+    <form method="post" class="panel glass-card">
+        <input type="hidden" name="action" value="budget">
+        <div class="panel-head"><h2>Monthly budgets</h2></div>
+        <div class="budget-grid">
+            {% for category in categories %}
+            <label>{{ category }}<input type="number" min="0" step="0.01" name="budget_{{ category }}" value="{{ budget_map.get(category, 0) }}"></label>
+            {% endfor %}
+        </div>
+        <button class="button primary" type="submit">Save budgets</button>
+    </form>
+
+    <form method="post" class="panel glass-card">
+        <input type="hidden" name="action" value="recurring">
+        <div class="panel-head"><h2>Recurring expenses</h2></div>
+        <div class="form-grid">
+            <label>Amount<input type="number" name="amount" min="0.01" step="0.01" required></label>
+            <label>Day<input type="number" name="day_of_month" min="1" max="31" value="1" required></label>
+            <label>Start date<input type="date" name="start_date" value="{{ today }}" required></label>
+            <label>Category<select name="category">{% for c in categories %}<option>{{ c }}</option>{% endfor %}</select></label>
+            <label>Payment<select name="payment_method">{% for p in payment_methods %}<option>{{ p }}</option>{% endfor %}</select></label>
+        </div>
+        <label>Description<input type="text" name="description" required placeholder="Rent, subscriptions, phone bill"></label>
+        <button class="button primary" type="submit">Add recurring</button>
+        {% if recurring %}
+            <div class="recurring-list">
+                {% for item in recurring %}
+                <div class="transaction-item">
+                    <span class="tx-icon expense">{{ item.category[0] }}</span>
+                    <div><strong>{{ item.description }}</strong><span>{{ item.category }} · day {{ item.day_of_month }}</span></div>
+                    <b>{{ settings.currency }}{{ "%.2f"|format(item.amount) }}</b>
+                    <form method="post" action="{{ url_for('delete_recurring', recurring_id=item.id) }}"><button class="icon-button small danger"><i data-lucide="trash-2"></i></button></form>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </form>
+
+    <article class="panel glass-card">
+        <div class="panel-head"><h2>Exports and theme</h2></div>
+        <div class="export-card">
+            <a class="button secondary" href="{{ url_for('export_csv') }}">Download CSV</a>
+            <a class="button secondary" href="{{ url_for('export_pdf') }}">Download PDF</a>
+        </div>
+        <form method="post" class="theme-choice">
+            <input type="hidden" name="action" value="theme">
+            <label><input type="radio" name="theme" value="light" {{ 'checked' if settings.theme == 'light' else '' }}>Light mode</label>
+            <label><input type="radio" name="theme" value="dark" {{ 'checked' if settings.theme == 'dark' else '' }}>Dark mode</label>
+            <button class="button primary" type="submit">Save theme</button>
+        </form>
+    </article>
+</section>
+{% endblock %}

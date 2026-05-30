@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}SpendWise | Student Expense Tracker{% endblock %}
+{% block content %}
+<section class="landing">
+    <nav class="landing-nav">
+        <a href="{{ url_for('landing') }}" class="brand">
+            <span class="brand-mark">S</span>
+            <span>SpendWise</span>
+        </a>
+        <div class="nav-actions">
+            <a href="{{ url_for('login') }}" class="ghost-link">Login</a>
+            <a href="{{ url_for('signup') }}" class="button primary">Start tracking</a>
+        </div>
+    </nav>
+    <div class="hero">
+        <div class="hero-copy">
+            <p class="eyebrow">AI expense tracker for students and young professionals</p>
+            <h1>Know where your money goes before the month gets dramatic.</h1>
+            <p>Track expenses, income, budgets, savings goals, recurring bills, exports, and AI spending insights in one portfolio-ready Flask app.</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('signup') }}" class="button primary">Create free account</a>
+                <a href="{{ url_for('login') }}" class="button secondary">I already have one</a>
+            </div>
+        </div>
+        <div class="hero-panel glass-card">
+            <div class="mini-stat">
+                <span>Balance</span>
+                <strong>₹18,420</strong>
+            </div>
+            <div class="mini-bars">
+                <span style="height: 62%"></span>
+                <span style="height: 88%"></span>
+                <span style="height: 45%"></span>
+                <span style="height: 72%"></span>
+                <span style="height: 55%"></span>
+            </div>
+            <div class="insight-chip">Food is 31% of this month's spending</div>
+        </div>
+    </div>
+    <div class="feature-strip">
+        <span>Budgets</span>
+        <span>Groq AI insights</span>
+        <span>CSV and PDF exports</span>
+        <span>Dark mode</span>
+    </div>
+</section>
+{% endblock %}
